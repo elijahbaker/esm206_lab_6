@@ -1,0 +1,89 @@
+---
+title: "Lab 6"
+author: "E Baker"
+date: "11/2/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(palmerpenguins)
+library(broom)
+library(equatiomatic)
+```
+
+## Rank based test example
+
+Mann-Whitney U (non-parametric alternative to an unpaired 2-sample t-test).
+
+HO (Null Hypothesis): Equal ranks (or medians)
+HA (Alternative Hypothesis): Ranks are not equal (or, medians are not equal)
+
+### Create samples
+
+`set.seed()` to create "pseudorandom, but reproducible samples"
+
+```{r}
+set.seed(1414)
+gp_1 <- sample.int(20, size= 15, replace = TRUE)
+
+set.seed(1424)
+gp_2 <- sample.int(30, size=15, replace=TRUE)
+```
+
+Take a quick look at te dirstibutions using `hist()`
+
+```{r}
+hist(gp_1)
+hist(gp_2)
+```
+
+Try a t-test so we can compare the results:
+
+```{r}
+ttest<- t.test(gp_1, gp_2)
+
+# IF these data were paired, I can just add the argument `paired = "TRUE"1 within the t.test function.
+```
+
+This p-value means that IF our samples are drawn from populations with the same mean, there is `r round(ttest$p.value,2)` probablity of finding sample means *at least as differernt* as mine by random chance. 
+
+[A more comprehensive explaination of difference between groups... actually means, data spread, effect size]...  there is no sig difference.
+
+### Mann Whitney U ranke based test
+
+We  use the `wilcox.test() function to perform a two-sample rank-based test.
+
+```{r}
+mwu <- wilcox.test(gp_1, gp_2)
+```
+
+This p-vlue means that if our samples are drawn froma  pupolation with the same median, there is a 28% chance of finding sample medians at least as diferent as ours by random chance. 
+
+No sig difference in medians via Mann-Whitney U test
+
+Example text for reporting: "The medians of group A (M = 22.4, g) and group B( M = 31.2, g) did not difeer significantly."
+
+
+# SImple linear regression
+
+Two *continous quantitiative* variables that you are trying to understand the relationship betweeen, and you think that a linear relationship makes sense. 
+
+
+Use the `penhuins` data from {palmerpenguins}, exploring flipper length (x) versus body mass (y)
+
+```{r}
+# Use View(penguins) to look at it
+# Make an exploratory scatterplot of flipper length (x) vs body mass (y)
+
+ggplot(data= penguins, aes(x= flipper_length_mm, y= body_mass_g)) +
+         geom_point() +
+         geom_smooth(method= "lm")
+
+```
+
+
